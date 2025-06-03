@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ review['title'] if review else 'Create New Review' }} - Review Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0b7dda;
+        }
+        .button.cancel {
+            background-color: #f44336;
+        }
+        .button.cancel:hover {
+            background-color: #d32f2f;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ 'Edit' if review else 'Create' }} Review</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">Review Title</label>
+                <input type="text" id="title" name="title" value="{{ review['title'] if review else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="rating">Rating (1-5)</label>
+                <select id="rating" name="rating" required>
+                    <option value="1" {{ 'selected' if review and review['rating'] == 1 else '' }}>1 - Poor</option>
+                    <option value="2" {{ 'selected' if review and review['rating'] == 2 else '' }}>2 - Fair</option>
+                    <option value="3" {{ 'selected' if review and review['rating'] == 3 else '' }}>3 - Good</option>
+                    <option value="4" {{ 'selected' if review and review['rating'] == 4 else '' }}>4 - Very Good</option>
+                    <option value="5" {{ 'selected' if review and review['rating'] == 5 else '' }}>5 - Excellent</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="status">Employment Status</label>
+                <select id="status" name="status" required>
+                    <option value="current" {{ 'selected' if review and review['status'] == 'current' else '' }}>Current Employee</option>
+                    <option value="former" {{ 'selected' if review and review['status'] == 'former' else '' }}>Former Employee</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="review">Review</label>
+                <textarea id="review" name="review" required>{{ review['review'] if review else '' }}</textarea>
+            </div>
+            
+            <div class="actions">
+                <button type="submit" class="button">{{ 'Update' if review else 'Submit' }} Review</button>
+                <a href="{{ url_for('employer', employer_id=review['employer_id'] if review else employer_id) }}" class="button cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

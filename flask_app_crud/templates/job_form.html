@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ job['title'] if job else 'Create New Job' }} - Job Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="number"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0b7dda;
+        }
+        .button.cancel {
+            background-color: #f44336;
+        }
+        .button.cancel:hover {
+            background-color: #d32f2f;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ 'Edit' if job else 'Create' }} Job</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">Job Title</label>
+                <input type="text" id="title" name="title" value="{{ job['title'] if job else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Job Description</label>
+                <textarea id="description" name="description" required>{{ job['description'] if job else '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="salary">Salary (USD)</label>
+                <input type="number" id="salary" name="salary" value="{{ job['salary'] if job else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="employer_id">Employer</label>
+                <select id="employer_id" name="employer_id" required>
+                    <option value="">Select an employer</option>
+                    {% for employer in employers %}
+                        <option value="{{ employer['id'] }}" {{ 'selected' if job and job['employer_id'] == employer['id'] else '' }}>
+                            {{ employer['name'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="actions">
+                <button type="submit" class="button">{{ 'Update' if job else 'Create' }} Job</button>
+                <a href="{{ url_for('jobs') }}" class="button cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
